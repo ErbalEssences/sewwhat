@@ -1,0 +1,1 @@
+json.array! @patterns, partial: "pattern", as: :pattern
