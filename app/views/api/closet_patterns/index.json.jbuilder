@@ -1,0 +1,1 @@
+json.array! @closet_patterns, partial: "closet_pattern", as: :closet_pattern

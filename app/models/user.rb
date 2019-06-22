@@ -6,6 +6,8 @@ class User < ApplicationRecord
   has_many :notes
   has_many :images
   has_many :closets
+  has_many :closet_patterns, through: :closet
+
 
   enum skill: {beginner: 0, intermediate: 1, experienced: 2}
 

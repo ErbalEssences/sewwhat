@@ -21,6 +21,12 @@ Rails.application.routes.draw do
     patch '/closets/:id' => 'closets#update'
     delete '/closets/:id' => 'closets#destroy'
 
+    get '/closet_patterns' => 'closet_patterns#index'
+    post '/closet_patterns' => 'closet_patterns#create'
+    get '/closet_patterns/:id'  => 'closet_patterns#show'
+    patch '/closet_patterns/:id' => 'closet_patterns#update'
+    delete '/closet_patterns/:id' => 'closet_patterns#destroy'
+
     get '/tags' => 'tags#index'
     post '/tags' => 'tags#create'
     get '/tags/:id'  => 'tags#show'
