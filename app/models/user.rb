@@ -7,6 +7,14 @@ class User < ApplicationRecord
   has_many :images
   has_many :closets
 
-  enum skill: {beginer: 0, intermediate: 1, experienced: 2}
+  enum skill: {beginner: 0, intermediate: 1, experienced: 2}
+
+  def public_notes
+    notes.public_only
+  end
+
+  def private_notes
+    notes.private_only
+  end
 
 end

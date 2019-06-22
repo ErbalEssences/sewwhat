@@ -1,5 +1,5 @@
 class ClosetPattern < ApplicationRecord
-  has_many :closets
-  has_many :patterns
+  belongs_to :closet
+  belongs_to :pattern
 
 end

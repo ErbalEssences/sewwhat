@@ -1,6 +1,36 @@
 class Api::PatternsController < ApplicationController
+  before_action :authenticate_admin, only: [:create, :update, :destroy]
+  
   def index
     @patterns = Pattern.all
+    name_search = params[:name]
+    display_name_search = params[:display_name]
+    tag_name_search = params[:tags]
+    out_of_print_search = params[:out_of_print]
+      
+    if name_search
+      @patterns = @patterns.where("name iLIKE ?","%#{name_search}%")
+    end
+
+    if display_name_search
+      @patterns = @patterns.where("display_name iLIKE ?","%#{display_name_search}%")
+    end
+
+    if out_of_print_search
+      @patterns = @patterns.where("out_of_print = true") if out_of_print_search == "true"
+      @patterns = @patterns.where("out_of_print = false") if out_of_print_search == "false"
+    end
+
+    if tag_name_search
+      pattern_collections = Tag.where(name: tag_name_search).map { |tag| tag.patterns }
+      base_array = nil
+      pattern_collections.each do |collection|
+        base_array ||= collection 
+        base_array &= collection
+      end
+      @patterns = base_array
+    end
+
     render 'index.json.jbuilder'
   end
 
@@ -30,7 +60,7 @@ class Api::PatternsController < ApplicationController
     @pattern.url = params[:url] || @pattern.url
     @pattern.price = params[:price] || @pattern.price
     @pattern.out_of_print = params[:out_of_print] || @pattern.out_of_print
-    @pattern.display_name = params[:display_name.titleize] || @pattern.display_name
+    @pattern.display_name = (params[:display_name] || @pattern.display_name).titleize
     
     if @pattern.save
       render 'show.json.jbuilder'

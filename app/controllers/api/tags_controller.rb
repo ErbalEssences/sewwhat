@@ -1,4 +1,6 @@
 class Api::TagsController < ApplicationController
+  before_action :authenticate_admin, only: [:create, :update, :destroy]
+  
   def index
     @tags = Tag.all
     render 'index.json.jbuilder'
@@ -22,7 +24,7 @@ class Api::TagsController < ApplicationController
 
   def update
     @tag = Tag.find(params[:id])
-    @tag.name = params[:name.titleize] || @tag.name.titleize
+    @tag.name = (params[:name] || @tag.name).titleize
     
     if @tag.save
       render 'show.json.jbuilder'
@@ -34,6 +36,6 @@ class Api::TagsController < ApplicationController
   def destroy
     @tag = Tag.find(params[:id])
     @tag.destroy
-    render json: {message: "Successfully destroyed image"}
+    render json: {message: "Successfully destroyed tag"}
   end
 end
