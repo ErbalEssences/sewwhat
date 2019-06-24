@@ -40,7 +40,7 @@ class Api::PatternsController < ApplicationController
                             url: params[:url],
                             price: params[:price],
                             out_of_print: params[:out_of_print],
-                            display_name: params[:display_name.titleize]
+                            display_name: (params[:display_name]).titleize
                           )
     if @pattern.save
       render 'show.json.jbuilder'

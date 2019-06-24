@@ -8,7 +8,7 @@ class Api::TagsController < ApplicationController
 
   def create
     @tag = Tag.new(
-                    name: params[:name.titleize]
+                    name: (params[:name]).titleize
                   )
     if @tag.save
       render 'show.json.jbuilder'
