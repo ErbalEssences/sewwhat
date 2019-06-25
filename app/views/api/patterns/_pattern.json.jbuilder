@@ -8,6 +8,7 @@ json.images do
   json.line_art do
     json.partial! pattern.images_line_art_only, partial: 'api/image', as: :image
   end
+  
   json.main_images do
     json.array! pattern.images_main_only, partial: 'api/images/image', as: :image
   end
