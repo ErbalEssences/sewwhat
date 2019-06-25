@@ -1,7 +1,8 @@
 class Api::ClosetPatternsController < ApplicationController
 
 def index
-    @closet_patterns = ClosetPattern.all
+    # @closet_patterns = ClosetPattern.all
+    @closet_patterns = current_user.closet_patterns
     render 'index.json.jbuilder'
   end
 

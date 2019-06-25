@@ -40,7 +40,9 @@ class Api::PatternsController < ApplicationController
                             url: params[:url],
                             price: params[:price],
                             out_of_print: params[:out_of_print],
-                            display_name: params[:display_name.titleize]
+                            display_name: (params[:display_name]).titleize,
+                            description: (params[:description)
+                            online_only: (params[:online_only)
                           )
     if @pattern.save
       render 'show.json.jbuilder'
@@ -61,6 +63,9 @@ class Api::PatternsController < ApplicationController
     @pattern.price = params[:price] || @pattern.price
     @pattern.out_of_print = params[:out_of_print] || @pattern.out_of_print
     @pattern.display_name = (params[:display_name] || @pattern.display_name).titleize
+    @pattern.description = params[:description] || @pattern.description
+    @pattern.out_of_print = params[:online_only] || @pattern.online_only
+
     
     if @pattern.save
       render 'show.json.jbuilder'
