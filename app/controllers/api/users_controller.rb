@@ -11,6 +11,7 @@ class Api::UsersController < ApplicationController
                       email: params[:email],
                       skill: params[:skill],
                       avatar_url: params[:avatar_url],
+                      avatar: params[:avatar],
                       password: params[:password],
                       password_confirmation: params[:password_confirmation]
                     )
@@ -27,15 +28,15 @@ class Api::UsersController < ApplicationController
   end
 
   def update
-    if current_user.id == @closet.user_id || current_user.admin?
-      @user = User.find(params[:id])
+    @user = User.find(params[:id])
+    if current_user.id == @user.id || current_user.admin?
+      
       @user.username = params[:username] || @user.username
       @user.email = params[:email] || @user.email
       @user.skill = params[:skill] || @user.skill
       @user.avatar_url = params[:avatar_url] || @user.avatar_url
-      @user.password = params[:password] || @user.password
-      @user.password_confirmation = params[:password_confirmation] || @user.password_confirmation
-      
+      @user.avatar = params[:avatar] || @user.avatar
+
       if @user.save
         render 'show.json.jbuilder'
       else 
@@ -47,8 +48,8 @@ class Api::UsersController < ApplicationController
   end
 
   def destroy
-    if current_user.id == @closet.user_id || current_user.admin?
-      @user = User.find(params[:id])
+    @user = User.find(params[:id])
+    if current_user.id == @user.id || current_user.admin?
       @user.destroy
       render json: {message: "Successfully destroyed user"}
     else

@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_secure_password
+  has_one_attached :avatar
 
   validates :email, presence: true, uniqueness: true
 
@@ -9,7 +10,7 @@ class User < ApplicationRecord
   has_many :closet_patterns, through: :closets
 
 
-  enum skill: {beginner: 0, intermediate: 1, experienced: 2}
+  enum skill: {Beginner: 0, Intermediate: 1, Experienced: 2}
 
   def public_notes
     notes.public_only
@@ -17,6 +18,14 @@ class User < ApplicationRecord
 
   def private_notes
     notes.private_only
+  end
+
+  def closet_number
+    closets.total
+  end
+
+  def pattern_number
+    closet_patterns.total
   end
 
 end

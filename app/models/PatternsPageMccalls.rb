@@ -3,6 +3,7 @@ class PatternsPageMccalls
   attr_reader :title_hash, :link_hash, :images, :line_art, :name, :display_name, :description, :url
   # @@current_tags = Tags.all.search(name:)
   @@current_tags = [ 
+
       "Very Easy",
       "Cardigan",
       "Shawl",
@@ -178,12 +179,14 @@ class PatternsPageMccalls
   @@new_tags = []
   
 
-  def initialize(brand, pattern_number)
+  def initialize(brand, pattern_number, search)
     @url = "https://#{brand}.mccall.com/#{pattern_number}"
     @@current_tags 
     @title_hash = {}
     @link_hash = {}
     @doc = fetch!
+    @search = search
+    @brand = brand
     @images = images_search
     @line_art = line_art_search
     @pattern_number = pattern_number
@@ -247,14 +250,17 @@ class PatternsPageMccalls
   end
 
   def tag_search
-    tags = []
+    tags = [@brand]
+    tags << @search.titleize unless @search == "crafts-dolls-pets"
     filler_name = ""
-    @@current_tags. each do |old|
+    @@current_tags.each do |old|
       filler_name = display_name_search
       filler_name.slice! "/ "
       if filler_name.include? old
         filler_name.slice! old
-        tags << old
+        unless tags.include? old
+          tags << old
+        end
       end
     end
     @@new_tags << filler_name
@@ -343,8 +349,7 @@ class PatternsPageMccalls
   def add_tags_to_database
     @current_tags.each do |tag|
       tag = Tag.find_or_create_by(name: tag)
-      if tag.save
-      else
+      unless tag.save
         puts tag.errors.full_messages
       end
     end
@@ -352,15 +357,6 @@ class PatternsPageMccalls
 
   def send_to_database
     p @name
-    p
-    if @name[-1] == "*" && Pattern.find_by(name: @name)
-      if @name[-3]  == "*"
-        @name = @pattern_number += "#"
-      else
-        @name += "*"
-      end
-    end
-
     pattern = Pattern.find_or_create_by(name: @pattern_number) do |new_pattern|
       new_pattern.url = @url
       new_pattern.price = @price,
@@ -369,7 +365,14 @@ class PatternsPageMccalls
       new_pattern.description = @description
       new_pattern.online_only = @online_only
     end
-
+    # if @name[-1] == "*" && Pattern.find_by(name: @name) 
+    # check url
+    #   if @name[-3]  == "*"
+    #     @name = @pattern_number += "#"
+    #   else
+    #     @name += "*"
+    #   end
+    # end
     unless pattern.save
       p "_______"
       p pattern.id
@@ -377,13 +380,14 @@ class PatternsPageMccalls
       p pattern.errors.full_messages
       p "_______"
     end
-
+p 1
     @tags.each do |tag|
+      tag = "Misses'" if tag == "Misses"
       insert_tag = Tag.find_by(name: tag)
+      p tag
       pattern_tag = PatternTag.find_or_create_by(tag_id: insert_tag.id, pattern_id: pattern.id)
 
-      if pattern_tag.save
-      else 
+      unless pattern_tag.save
         p "========"
         p pattern.id
         p insert_tag.id
@@ -401,15 +405,37 @@ class PatternsPageMccalls
     pattern.description = @description
     pattern.online_only = @online_only
 
-    if pattern.save
-    else 
+    unless pattern.save
       p "......."
       p pattern.id
       p pattern.name
       p pattern.errors.full_messages
       p "......."
     end
+p 2
+    image = Image.find_or_create_by(pattern_id: pattern.id, url: @line_art, line_art: true)
+
+    unless image.save
+      p "========"
+      p image.id
+      p image.name
+      p @line_art
+      p image.errors.full_messages
+      p "========"
+    end
+    @images.each do |image_url|
+      image = Image.find_or_create_by(pattern_id: pattern.id, url: image_url, line_art: false)
+      unless image.save
+        p "========"
+        p image.id
+        p image.name
+        p image_url
+        p image.errors.full_messages
+        p "========"
+      end
+    end
   end
+p 3 
 end
 
 

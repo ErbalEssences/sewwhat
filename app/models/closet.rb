@@ -5,4 +5,6 @@ class Closet < ApplicationRecord
   has_many :closet_patterns
   has_many :patterns, through: :closet_patterns
 
+  scope :total, -> { count() }
+
 end

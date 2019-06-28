@@ -2,7 +2,12 @@ class Api::PatternsController < ApplicationController
   before_action :authenticate_admin, only: [:create, :update, :destroy]
   
   def index
-    @patterns = Pattern.all
+    # @patterns = Pattern.all
+    @patterns = Pattern.limit(50)
+
+
+
+
     name_search = params[:name]
     display_name_search = params[:display_name]
     tag_name_search = params[:tags]
@@ -38,11 +43,12 @@ class Api::PatternsController < ApplicationController
     @pattern = Pattern.new(
                             name: params[:name],
                             url: params[:url],
+                            # file: params[:file],
                             price: params[:price],
                             out_of_print: params[:out_of_print],
                             display_name: (params[:display_name]).titleize,
-                            description: (params[:description)
-                            online_only: (params[:online_only)
+                            description: params[:description],
+                            online_only: params[:online_only]
                           )
     if @pattern.save
       render 'show.json.jbuilder'

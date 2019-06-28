@@ -4,5 +4,6 @@ class ClosetPattern < ApplicationRecord
 
   has_many :users, through: :closets
 
+  scope :total, -> { count() }
 
 end

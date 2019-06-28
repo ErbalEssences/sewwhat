@@ -4,6 +4,7 @@ class BrandPageMccalls
 
   def initialize(brand, search)
     @brand = brand
+    @search = search
     @url_2 = "https://#{@brand}.mccall.com/"
     @url = "https://#{@brand}.mccall.com/patterns/#{search}/all?page=all"
     @title_hash = {}
@@ -20,7 +21,7 @@ class BrandPageMccalls
   def patterns_search
     name_list = []
     @doc.css("div.field-name-title").each do |data|
-      name_list << data.text
+      name_list << data.text.strip
     end 
     name_list
   end
@@ -28,7 +29,8 @@ class BrandPageMccalls
   def pattern_page_search
     last = ""
     @name_list.each do |name|
-      last = PatternsPageMccalls.new(@brand, name)
+      @brand = "mccall" if @brand == "mccallpattern" 
+      last = PatternsPageMccalls.new(@brand, name, @search)
     end
   end
 
@@ -36,6 +38,5 @@ class BrandPageMccalls
     sale = ""
   end
 end
-
 
 

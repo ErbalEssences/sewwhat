@@ -3,6 +3,7 @@ class Api::ClosetsController < ApplicationController
   def index
     name_search = params[:name]
     @closets = current_user.closets
+    # @patterns = @closet.patterns
     # @closets = Closet.all
     if name_search
       @closets = @closets.where("name iLIKE ?","%#{name_search}%")
@@ -28,7 +29,7 @@ class Api::ClosetsController < ApplicationController
     tag_name_search = params[:tags]
     out_of_print_search = params[:out_of_print]
     @closet = Closet.find(params[:id])
-    @patterns = @closet.patterns
+    # @patterns = @closet.patterns
 
     if name_search
       @patterns = @patterns.where("name iLIKE ?","%#{name_search}%")

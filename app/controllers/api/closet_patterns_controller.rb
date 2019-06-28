@@ -2,14 +2,14 @@ class Api::ClosetPatternsController < ApplicationController
 
 def index
     # @closet_patterns = ClosetPattern.all
-    @closet_patterns = current_user.closet_patterns
+    @closet_patterns = current_user.closet_patterns#.uniq
     render 'index.json.jbuilder'
   end
 
   def create
     @closet_pattern = ClosetPattern.new(
-                            name: params[:name],
-                            user_id: current_user.id
+                            pattern_id: params[:pattern_id],
+                            closet_id: params[:closet_id]
                           )
     if @closet_pattern.save
       render 'show.json.jbuilder'
