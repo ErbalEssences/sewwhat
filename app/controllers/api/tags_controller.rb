@@ -2,8 +2,17 @@ class Api::TagsController < ApplicationController
   before_action :authenticate_admin, only: [:create, :update, :destroy]
   
   def index
+    tag_search = params[:category]
     @tags = Tag.all
+    if tag_search
+      @tags = @tags.where("category = ?","%#{tag_search}%")
+    end
     render 'index.json.jbuilder'
+  end
+
+  def index_by_category
+    @tags = Tag.all
+    render 'by_category.json.jbuilder'
   end
 
   def create

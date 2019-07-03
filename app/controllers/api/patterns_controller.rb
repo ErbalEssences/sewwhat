@@ -3,23 +3,29 @@ class Api::PatternsController < ApplicationController
   
   def index
     # @patterns = Pattern.all
-    @patterns = Pattern.all.includes(:images, :notes, :closet_patterns, :closets).limit(10)
+    @patterns = Pattern.all.includes(:images, :notes, :closet_patterns, :closets).limit(50)
 
     name_search = params[:name]
     display_name_search = params[:display_name]
     tag_name_search = params[:tags]
     out_of_print_search = params[:out_of_print]
     top_50_search = params[:top_50]
-      
+    sorted_price = params[:sort_price]
+    sorted_name = params[:sort_name]
+    p"oooo"
+    p tag_name_search
+    p"oooo"
+
     if name_search
-      @patterns = @patterns.where("name iLIKE ?","%#{name_search}%")
+      @patterns = @patterns.where("name iLIKE ?","%#{name_search.strip}%")
     end
 
     if display_name_search
-      @patterns = @patterns.where("display_name iLIKE ?","%#{display_name_search}%")
+      @patterns = @patterns.where("display_name iLIKE ?","%#{display_name_search.strip}%")
     end
 
     if out_of_print_search
+      p "out_of_print>>>>>>>>>>>>>>>>>>>>>>"
       @patterns = @patterns.where("out_of_print = true") if out_of_print_search == "true"
       @patterns = @patterns.where("out_of_print = false") if out_of_print_search == "false"
     end
@@ -31,6 +37,8 @@ class Api::PatternsController < ApplicationController
     end
 
     if tag_name_search
+      p "tag search>>>>>>>>>>>>>>>>>>>>>>"
+
       pattern_collections = Tag.where(name: tag_name_search).map { |tag| tag.patterns }
       base_array = nil
       pattern_collections.each do |collection|
@@ -38,6 +46,25 @@ class Api::PatternsController < ApplicationController
         base_array &= collection
       end
       @patterns = base_array
+    end
+
+    if sorted_price
+      p ">>>>>>>>>>>>>>>>>>>>>>"
+
+      if sort_order == "desc"
+        @tags = @tags.all.order(sorted_price => desc)
+      elsif sorted_price or (sort_order == "low" or sort_order == "asc")
+        @tags = @tags.all.order(sorted_price)
+      end
+    end
+    if sorted_name
+      p "sorted name>>>>>>>>>>>>>>>>>>>>>>"
+
+      if sort_order == "desc"
+        @tags = @tags.all.order(sorted_name => desc)
+      elsif sorted_name or (sort_order == "low" or sort_order == "asc")
+        @tags = @tags.all.order(sorted_name)
+      end
     end
 
     render 'index.json.jbuilder'

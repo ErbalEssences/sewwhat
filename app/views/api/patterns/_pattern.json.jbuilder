@@ -1,7 +1,8 @@
 json.id pattern.id
 json.name pattern.name
 json.url pattern.url
-json.price pattern.price
+json.original_price pattern.price
+json.price number_to_currency(pattern.price)
 json.out_of_print pattern.out_of_print
 json.display_name pattern.display_name.titleize
 json.description pattern.description

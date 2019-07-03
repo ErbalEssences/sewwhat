@@ -29,6 +29,7 @@ Rails.application.routes.draw do
 
     get '/tags' => 'tags#index'
     post '/tags' => 'tags#create'
+    get '/tags/by_category' => 'tags#index_by_category'
     get '/tags/:id'  => 'tags#show'
     patch '/tags/:id' => 'tags#update'
     delete '/tags/:id' => 'tags#destroy'
