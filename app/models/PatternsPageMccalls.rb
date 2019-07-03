@@ -15,7 +15,7 @@ class PatternsPageMccalls
       "Top",
       "Invisible Zipper",
       "Skirt",
-      "Children's",
+      "Children",
       "Floor-length Train",
       "Blouse",
       "Vest",
@@ -250,7 +250,15 @@ class PatternsPageMccalls
   end
 
   def tag_search
-    tags = [@brand]
+    tags = []
+    if @brand == "mccallpattern"
+      tags = ["Mccall's"]
+    elsif @brand == "voguepatterns"
+      tags = ["Vogue"]
+    elsif @brand == "mccallpattern"
+      tags = ["Butterick"]
+    end
+    p @search.titleize
     tags << @search.titleize unless @search == "crafts-dolls-pets"
     filler_name = ""
     @@current_tags.each do |old|
@@ -348,7 +356,7 @@ class PatternsPageMccalls
 
   def add_tags_to_database
     @current_tags.each do |tag|
-      tag = Tag.find_or_create_by(name: tag)
+      tag = Tag.find_by(name: tag)
       unless tag.save
         puts tag.errors.full_messages
       end
@@ -380,19 +388,25 @@ class PatternsPageMccalls
       p pattern.errors.full_messages
       p "_______"
     end
-p 1
+    plurals = ["Dress", "Skirt", "Pant", "Short", "Jumpsuit", "Top", "Coat", "Jacket", "Vest", "Doll"]
+p 1 
     @tags.each do |tag|
       tag = "Misses'" if tag == "Misses"
-      insert_tag = Tag.find_by(name: tag)
+      tag = "Dresses" if tag == "Dress"
+      tag = "Loose Fitting" if tag == "Loose-fitting"
+      tag = "V-Neck" if tag == "V-neck"
+
+      if plurals.include? tag
+        tag += "s"
+      end
       p tag
+      insert_tag = Tag.find_by(name: tag)
       pattern_tag = PatternTag.find_or_create_by(tag_id: insert_tag.id, pattern_id: pattern.id)
 
       unless pattern_tag.save
         p "========"
         p pattern.id
         p insert_tag.id
-        p pattern.name
-        p tag.name
         p pattern_tag.errors.full_messages
         p "========"
       end
@@ -414,28 +428,31 @@ p 1
     end
 p 2
     image = Image.find_or_create_by(pattern_id: pattern.id, url: @line_art, line_art: true)
-
     unless image.save
       p "========"
       p image.id
-      p image.name
       p @line_art
       p image.errors.full_messages
       p "========"
     end
     @images.each do |image_url|
+      # file = HTTP.get(image_url)
       image = Image.find_or_create_by(pattern_id: pattern.id, url: image_url, line_art: false)
+      # image.file = HTTP.get(image_url)
+      # image.file = file
+      # image.update(file: file)
+      # image.update(file: HTTP.get(image_url))
+
       unless image.save
         p "========"
         p image.id
-        p image.name
         p image_url
         p image.errors.full_messages
         p "========"
       end
     end
+  p 3 
   end
-p 3 
 end
 
 

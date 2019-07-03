@@ -8,6 +8,7 @@ json.description pattern.description
 
 
 
+
 json.images do
   json.line_art do
     json.partial! pattern.images_line_art_only, partial: 'api/image', as: :image
@@ -23,4 +24,12 @@ end
 
 json.tags do
   json.array! pattern.tags, partial: 'api/tags/tag', as: :tag
+end
+
+json.private_notes do
+  json.array! pattern.notes.private_only, partial: 'api/notes/note', as: :note
+end
+
+json.public_notes do
+  json.array! pattern.notes.public_only, partial: 'api/notes/note', as: :note
 end

@@ -3,15 +3,13 @@ class Api::PatternsController < ApplicationController
   
   def index
     # @patterns = Pattern.all
-    @patterns = Pattern.limit(50)
-
-
-
+    @patterns = Pattern.all.includes(:images, :notes, :closet_patterns, :closets).limit(10)
 
     name_search = params[:name]
     display_name_search = params[:display_name]
     tag_name_search = params[:tags]
     out_of_print_search = params[:out_of_print]
+    top_50_search = params[:top_50]
       
     if name_search
       @patterns = @patterns.where("name iLIKE ?","%#{name_search}%")
@@ -24,6 +22,12 @@ class Api::PatternsController < ApplicationController
     if out_of_print_search
       @patterns = @patterns.where("out_of_print = true") if out_of_print_search == "true"
       @patterns = @patterns.where("out_of_print = false") if out_of_print_search == "false"
+    end
+
+    if top_50_search
+      @patterns = @patterns.order(created_at: :desc)
+      @patterns.limit(10)
+      # @patterns = @patterns.where("")
     end
 
     if tag_name_search
@@ -43,7 +47,7 @@ class Api::PatternsController < ApplicationController
     @pattern = Pattern.new(
                             name: params[:name],
                             url: params[:url],
-                            # file: params[:file],
+                            file: params[:file],
                             price: params[:price],
                             out_of_print: params[:out_of_print],
                             display_name: (params[:display_name]).titleize,

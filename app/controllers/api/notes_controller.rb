@@ -1,7 +1,9 @@
 class Api::NotesController < ApplicationController
   def index
-    @notes = Note.all
-    @notes = (current_user.notes + @notes.where(public: true)).uniq
+    # @notes = Note.all
+    @notes = current_user.notes
+    @notes = Note.limit(100) if current_user.admin == true
+    # @notes = (current_user.notes + @notes.where(public: true)).uniq
     render 'index.json.jbuilder'
   end
 
@@ -46,8 +48,8 @@ class Api::NotesController < ApplicationController
   end
 
   def destroy
-    if current_user.id == @closet.user_id || current_user.admin?
-      @note = Note.find(params[:id])
+    @note = Note.find(params[:id])      
+    if current_user.id == @note.user_id || current_user.admin?
       @note.destroy
       render json: {message: "Successfully destroyed note"}
     else 

@@ -24,7 +24,8 @@ class Api::TagsController < ApplicationController
 
   def update
     @tag = Tag.find(params[:id])
-    @tag.name = (params[:name] || @tag.name).titleize
+    @tag.name = (params[:name] || @tag.name)
+    @tag.category = (params[:category] || @tag.category).titleize
     
     if @tag.save
       render 'show.json.jbuilder'
