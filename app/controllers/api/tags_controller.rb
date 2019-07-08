@@ -3,7 +3,7 @@ class Api::TagsController < ApplicationController
   
   def index
     tag_search = params[:category]
-    @tags = Tag.all
+    @tags = Tag.all.order(category: :asc)
     if tag_search
       @tags = @tags.where("category = ?","%#{tag_search}%")
     end

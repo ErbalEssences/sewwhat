@@ -92,7 +92,6 @@ class PatternsPageMccalls
       "Skirts",
       "Jumpsuits",
       "Maternity",
-      "All Misses",
       "Plus Sizes",
       "Accessories",
       "Aprons",
@@ -108,7 +107,6 @@ class PatternsPageMccalls
       "Home Decorating",
       "Indie",
       "Butterick",
-      "Misses'",
       "Fitted",
       "Back Opening",
       "Tie Closures",
@@ -255,11 +253,12 @@ class PatternsPageMccalls
       tags = ["Mccall's"]
     elsif @brand == "voguepatterns"
       tags = ["Vogue"]
-    elsif @brand == "mccallpattern"
+    elsif @brand == "butterick"
       tags = ["Butterick"]
     end
     p @search.titleize
-    tags << @search.titleize unless @search == "crafts-dolls-pets"
+    tags << "Home Decorating" if @search == "home-decorating"
+    tags << @search.titleize unless @search == "crafts-dolls-pets" || @search == "out-of-print"
     filler_name = ""
     @@current_tags.each do |old|
       filler_name = display_name_search
@@ -313,8 +312,8 @@ class PatternsPageMccalls
         end
       end 
     end
-    if @out_of_print == true && price == nil
-      return price
+    if @out_of_print == true && price == 0 || @out_of_print == true && price == nil
+      return nil
     end
     price.slice! "$"
     price.to_f
@@ -394,6 +393,12 @@ p 1
       tag = "Misses'" if tag == "Misses"
       tag = "Dresses" if tag == "Dress"
       tag = "Loose Fitting" if tag == "Loose-fitting"
+      tag = "Elasticized Waist" if tag == "Elastic Waist"
+      tag = "Elasticized Waist" if tag == "Elastic-Waist"
+      tag = "Flutter Sleeves" if tag == "Flutter Sleeve"
+      tag = "Tiered" if tag == "Tiers"
+      tag = "Gathered Bust" if tag == "Gathered-Bust"
+
       tag = "V-Neck" if tag == "V-neck"
 
       if plurals.include? tag

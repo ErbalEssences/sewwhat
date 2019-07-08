@@ -1,3 +1,6 @@
+json.count @count
+json.numbers @numbers
+
 json.id pattern.id
 json.name pattern.name
 json.url pattern.url
@@ -7,7 +10,27 @@ json.out_of_print pattern.out_of_print
 json.display_name pattern.display_name.titleize
 json.description pattern.description
 
+json.brand pattern.tags.Brand if pattern.tags.Brand 
+# json.main pattern.tags.Main if pattern.tags.Main
+# json.subcategory pattern.tags.Subcategory if pattern.tags.Subcategory
+json.designers pattern.tags.Designer if pattern.tags.Designer
+# json.collections pattern.tags.Details if pattern.tags.Details
+json.difficulty pattern.tags.Difficulty if pattern.tags.Difficulty
 
+
+
+tags_list = []
+pattern.tags.Brand.each do |tag|
+  tags_list << tag.name
+end
+pattern.tags.Subcategory.each do |tag|
+  tags_list << tag.name
+end
+pattern.tags.Details.each do |tag|
+  tags_list << tag.name
+end
+
+json.tags tags_list.join(", ")
 
 
 json.images do
@@ -23,9 +46,9 @@ json.images do
   end
 end
 
-json.tags do
-  json.array! pattern.tags, partial: 'api/tags/tag', as: :tag
-end
+# json.tags do
+#   json.array! pattern.tags, partial: 'api/tags/tag', as: :tag
+# end
 
 json.private_notes do
   json.array! pattern.notes.private_only, partial: 'api/notes/note', as: :note

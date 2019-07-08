@@ -11,7 +11,7 @@ class Pattern < ApplicationRecord
   has_many :tags, through: :pattern_tags
 
   has_many :notes
-  
+
 
   def images_line_art_only
     images.line_art_only

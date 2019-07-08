@@ -5,8 +5,8 @@ class BrandPageMccalls
   def initialize(brand, search)
     @brand = brand
     @search = search
-    @url_2 = "https://#{@brand}.mccall.com/"
-    @url = "https://#{@brand}.mccall.com/patterns/#{search}/all?page=all"
+    @url_2 = "https://#{brand}.mccall.com/"
+    @url = "https://#{brand}.mccall.com/patterns/#{search}/all?page=all"
     @title_hash = {}
     @link_hash = {}
     @doc = fetch!
@@ -29,7 +29,6 @@ class BrandPageMccalls
   def pattern_page_search
     last = ""
     @name_list.each do |name|
-      @brand = "mccall" if @brand == "mccallpattern" 
       last = PatternsPageMccalls.new(@brand, name, @search)
     end
   end
