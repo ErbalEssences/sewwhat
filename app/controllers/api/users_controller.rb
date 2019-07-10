@@ -30,13 +30,14 @@ class Api::UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     if current_user.id == @user.id || current_user.admin?
-      
+      p params[:avatar]
       @user.username = params[:username] || @user.username
       @user.email = params[:email] || @user.email
       @user.skill = params[:skill] || @user.skill
-      @user.avatar_url = params[:avatar_url] || @user.avatar_url
-      @user.avatar = params[:avatar] || @user.avatar
-
+      # @user.avatar_url = params[:avatar_url] || @user.avatar_url
+      unless params[:avatar] == ""
+        @user.avatar = params[:avatar] || @user.avatar 
+      end
       if @user.save
         render 'show.json.jbuilder'
       else 

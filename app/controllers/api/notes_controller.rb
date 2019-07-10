@@ -31,9 +31,9 @@ class Api::NotesController < ApplicationController
   end
 
   def update
-    if current_user.id == @closet.user_id || current_user.admin?
-      @note = Note.find(params[:id])
-      @note.pattern_id = params[pattern_id] || @note.pattern_id
+    @note = Note.find(params[:id])  
+    if current_user.id == @note.user_id || current_user.admin?
+      # @note.pattern_id = params[pattern_id] || @note.pattern_id
       @note.body = params[body] || @note.body
       @note.public = params[public] || @note.public
       

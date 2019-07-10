@@ -9,7 +9,7 @@ class Api::PatternsController < ApplicationController
     display_name_search = params[:display_name]
     tag_name_search = params[:tags]
     out_of_print_search = params[:out_of_print]
-    top_50_search = params[:top_50]
+    top_30_search = params[:top_9]
     price_search_low = params[:price_low]
     price_search_high = params[:price_high]
     sorted_price = params[:sort_price]
@@ -45,33 +45,40 @@ class Api::PatternsController < ApplicationController
       @patterns = @patterns.where("display_name iLIKE ?","%#{display_name_search.strip}%")
     end
 
+
+    if tag_name_search
+      # pattern_collections = Tag.where(name: tag_name_search).map { |tag| tag.patterns }
+      # base_array = nil
+      # pattern_collections.each do |collection|
+      #   base_array ||= collection 
+      #   base_array &= collection
+      # end
+      # @patterns = base_array
+
+      pattern_ids = Tag.where(name: tag_name_search).map { |tag| tag.patterns.pluck(:id) }
+      base_array = nil
+      pattern_ids.each do |collection|
+        base_array ||= collection 
+        base_array &= collection
+      end
+      @patterns = Pattern.where(id: base_array)
+
+      # tag_sql_exclusive_where_string = Tag.where(name: tag_name_search).pluck(:id).map { |tag_id| "tags.id = #{tag_id}"}.join(" AND ")
+      # @patterns = Pattern.joins(:pattern_tags).joins(:tags).where(tag_sql_exclusive_where_string).distinct
+    end
     if out_of_print_search
       @patterns = @patterns.where("out_of_print = true") if out_of_print_search == "true"
       @patterns = @patterns.where("out_of_print = false") if out_of_print_search == "false"
       @count = @patterns.count()
     end
 
-    if top_50_search
-      @patterns = @patterns.order(created_at: :desc)
-      @patterns.limit(10)
-      # @patterns = @patterns.where("")
-    end
-
-    
-
-    if tag_name_search
-      pattern_collections = Tag.where(name: tag_name_search).map { |tag| tag.patterns }
-      base_array = nil
-      pattern_collections.each do |collection|
-        base_array ||= collection 
-        base_array &= collection
-      end
-      @patterns = base_array
-
-    end
     @count = @patterns.count()
     number = @count/30
 
+    if top_30_search
+      @patterns = Pattern.where("out_of_print = false")
+      @patterns = @patterns.order(created_at: :desc)
+    end
 
 
     offset_number = 0 unless offset_number
@@ -101,6 +108,8 @@ class Api::PatternsController < ApplicationController
     end
 
     @patterns = @patterns.limit(30).offset(offset_number)
+
+
     render 'index.json.jbuilder'
   end
 
